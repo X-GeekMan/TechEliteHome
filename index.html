@@ -9,6 +9,11 @@
       href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
       rel="stylesheet"
     />
+    <!-- 移除旧版本 -->
+    <!-- <script src="https://cdn.emailjs.com/dist/email.min.js"></script> -->
+
+    <!-- 引入最新v4版本 -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <!-- Tailwind 配置 -->
     <script>
       tailwind.config = {
@@ -62,6 +67,35 @@
         }
         .product-card-hover:hover {
           transform: translateY(-10px) scale(1.02);
+        }
+        /* Toast提示样式 */
+        .toast {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          padding: 12px 20px;
+          border-radius: 8px;
+          color: white;
+          font-size: 14px;
+          z-index: 9999;
+          opacity: 0;
+          transform: translateX(100%);
+          transition: all 0.3s ease;
+        }
+        .toast.show {
+          opacity: 1;
+          transform: translateX(0);
+        }
+        .toast.success {
+          background-color: #10b981; /* 成功绿 */
+        }
+        .toast.error {
+          background-color: #ef4444; /* 错误红 */
+        }
+        /* 按钮加载状态 */
+        .btn-loading {
+          opacity: 0.8;
+          cursor: not-allowed;
         }
       }
       @keyframes float {
@@ -417,7 +451,7 @@
             class="bg-dark/60 backdrop-blur-sm p-8 rounded-xl border border-primary/10 hover:border-primary/30 transition-all duration-300 group hover:shadow-lg hover:shadow-primary/5"
           >
             <div
-              class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 text-primary text-2xl group-hover:bg-primary/20 transition-all duration-300"
+              class="w-14 h-14 rounded-full bg-primary/10 flex items itemscenter justify-center mb-6 text-primary text-2xl group-hover:bg-primary/20 transition-all duration-300"
             >
               <i class="fa fa-bolt"></i>
             </div>
@@ -579,7 +613,7 @@
         </div>
       </div>
     </section>
-    <!-- 联系我们 - 已将零售购买和批量咨询位置对换 -->
+    <!-- 联系我们 -->
     <section id="contact" class="py-24 relative overflow-hidden">
       <div class="container mx-auto px-4">
         <div class="text-center max-w-3xl mx-auto mb-16">
@@ -596,14 +630,14 @@
           </p>
         </div>
         <div class="grid md:grid-cols-2 gap-12">
-          <!-- 零售购买 - 现在位于左侧 -->
+          <!-- 零售购买 -->
           <div
             class="bg-dark-light/60 backdrop-blur-sm p-8 rounded-xl border border-primary/10"
           >
             <h3 class="text-2xl font-bold mb-6">零售购买</h3>
             <div class="flex flex-wrap gap-8 mb-8">
               <a
-                href="#"
+                href="https://e.tb.cn/h.hwbgmuSwm2PbCDg?tk=9Ijh4mORiU3" target="_blank"
                 class="flex items-center space-x-5 px-8 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg hover:opacity-90 transition-opacity"
               >
                 <i
@@ -612,7 +646,7 @@
                 <span>淘宝零售</span>
               </a>
               <a
-                href="#"
+                href="https://m.tb.cn/h.hw2Fldc?tk=3qYn4mO71V9" target="_blank"
                 class="flex items-center space-x-5 px-8 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:opacity-90 transition-opacity"
               >
                 <i
@@ -622,10 +656,10 @@
               </a>
             </div>
 
-            <!-- 批量/定制咨询 - 现在位于零售下方 -->
+            <!-- 批量/定制咨询 -->
             <div class="pt-6 border-t border-primary/10">
               <h3 class="text-2xl font-bold mb-6">批量/定制咨询</h3>
-              <form class="space-y-6">
+              <form id="cooperation-form" class="space-y-6">
                 <div class="grid md:grid-cols-2 gap-6">
                   <div>
                     <label
@@ -638,6 +672,7 @@
                       id="name"
                       class="w-full bg-dark/50 border border-primary/20 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                       placeholder="您的姓名"
+                      required
                     />
                   </div>
                   <div>
@@ -651,6 +686,7 @@
                       id="email"
                       class="w-full bg-dark/50 border border-primary/20 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                       placeholder="您的邮箱地址"
+                      required
                     />
                   </div>
                 </div>
@@ -695,19 +731,21 @@
                     rows="4"
                     class="w-full bg-dark/50 border border-primary/20 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                     placeholder="请详细描述您的批量采购需求或定制化要求"
+                    required
                   ></textarea>
                 </div>
                 <button
                   type="submit"
+                  id="submit-btn"
                   class="w-full bg-primary hover:bg-primary/90 px-6 py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/30 font-medium"
                 >
-                  提交批量/定制咨询
+                  <i class="fa fa-paper-plane mr-2"></i> 提交合作咨询
                 </button>
               </form>
             </div>
           </div>
 
-          <!-- 联系方式和合作品牌 - 保持在右侧 -->
+          <!-- 联系方式和合作品牌 -->
           <div class="space-y-8">
             <div
               class="bg-dark-light/60 backdrop-blur-sm p-8 rounded-xl border border-primary/10"
@@ -723,7 +761,7 @@
                   <div>
                     <h4 class="font-bold mb-1">公司地址</h4>
                     <p class="text-gray-300">
-                      上海市浦东新区张江高科技园区科苑路88号
+                      无锡市新吴区高科技园区88号
                     </p>
                   </div>
                 </div>
@@ -735,7 +773,7 @@
                   </div>
                   <div>
                     <h4 class="font-bold mb-1">联系电话</h4>
-                    <p class="text-gray-300">400-888-9999</p>
+                    <p class="text-gray-300">15852752613</p>
                   </div>
                 </div>
                 <div class="flex items-start space-x-4">
@@ -746,7 +784,8 @@
                   </div>
                   <div>
                     <h4 class="font-bold mb-1">电子邮箱</h4>
-                    <p class="text-gray-300">contact@guardradar.com</p>
+                    <p class="text-gray-300">zhangb188@qq.com</p>
+                    <p class="text-gray-300">124933736@qq.com</p>
                   </div>
                 </div>
                 <div class="flex items-start space-x-4">
@@ -843,6 +882,8 @@
         </div>
       </div>
     </section>
+    <!-- 提示框组件 -->
+    <div id="toast" class="toast"></div>
     <!-- 页脚 -->
     <footer class="bg-dark border-t border-primary/10 py-12">
       <div class="container mx-auto px-4">
@@ -1108,6 +1149,77 @@
       // 页面加载和滚动时触发动画
       window.addEventListener("load", animateOnScroll);
       window.addEventListener("scroll", animateOnScroll);
+
+      // EmailJS 核心配置与表单提交逻辑
+      document.addEventListener("DOMContentLoaded", function () {
+        // 关键：替换为你的 EmailJS 配置
+        const EMAILJS_USER_ID = "wE3hm6yaNgZMMSQBI"; // 你的 EmailJS 用户ID
+        const EMAILJS_SERVICE_ID = "service_tucg9oz"; // 你的 EmailJS 服务ID
+        const EMAILJS_TEMPLATE_ID = "template_ho8d8tf"; // 你的 EmailJS 模板ID
+        
+        // 初始化 EmailJS
+        emailjs.init(EMAILJS_USER_ID);
+        
+        // 获取表单和按钮元素
+        const form = document.getElementById("cooperation-form");
+        const submitBtn = document.getElementById("submit-btn");
+        const toast = document.getElementById("toast");
+        
+        // 表单提交事件
+        form.addEventListener("submit", function (e) {
+          e.preventDefault(); // 阻止表单默认刷新行为
+          
+          // 按钮加载状态（防止重复提交）
+          submitBtn.disabled = true;
+          submitBtn.classList.add("btn-loading");
+          submitBtn.innerHTML = '<i class="fa fa-spinner mr-2"></i> 提交中...';
+          
+          // 收集表单数据（与 EmailJS 模板变量对应）
+          const formData = {
+            user_name: document.getElementById("name").value, // 姓名（对应模板变量 {{user_name}}）
+            user_company: document.getElementById("company").value, // 公司（对应模板变量 {{user_company}}）
+            user_email: document.getElementById("email").value, // 邮箱（对应模板变量 {{user_email}}）
+            user_interest: document.getElementById("interest").value, // 感兴趣的产品（新增字段）
+            user_message: document.getElementById("message").value, // 需求（对应模板变量 {{user_message}}）
+          };
+          
+          // 发送邮件 via EmailJS
+          emailjs
+            .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, formData)
+            .then(
+              function (response) {
+                // 发送成功：显示成功提示 + 重置表单
+                showToast("合作咨询提交成功！我们将尽快与您联系", "success");
+                form.reset(); // 清空表单
+                console.log("邮件发送成功:", response);
+              },
+              function (error) {
+                // 发送失败：显示错误提示
+                showToast("提交失败，请稍后重试或直接联系我们", "error");
+                console.error("邮件发送失败:", error);
+              }
+            )
+            .finally(function () {
+              // 恢复按钮状态（无论成功/失败）
+              submitBtn.disabled = false;
+              submitBtn.classList.remove("btn-loading");
+              submitBtn.innerHTML =
+                '<i class="fa fa-paper-plane mr-2"></i> 提交合作咨询';
+            });
+        });
+        
+        // 显示提示消息
+        function showToast(message, type) {
+          toast.textContent = message;
+          toast.className = `toast ${type}`; // 重置类名 + 添加类型（success/error）
+          toast.classList.add("show"); // 显示提示
+          
+          // 3秒后自动隐藏
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3000);
+        }
+      });
     </script>
   </body>
 </html>
